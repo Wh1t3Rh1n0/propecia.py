@@ -33,7 +33,9 @@ def test_port(ip, port):
         s.settimeout(2)
         s.connect((str(ip), int(port)))
         s.close
+        screenLock.acquire()
         print ip
+        screenLock.release()
         return True
     except:
         return False
@@ -42,8 +44,10 @@ def test_port(ip, port):
 def start_thread(ip, port):
     t = threading.Thread(target=test_port, args=(ip, port))
     t.start()
-    
-    
+
+
+screenLock = threading.Semaphore(value=1)
+   
 for n in range(0,256):
     ip = ip_prefix + "." + str(n)
     start_thread(ip, port)
